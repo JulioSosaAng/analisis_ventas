@@ -9,6 +9,7 @@ from matplotlib.ticker import FuncFormatter, MaxNLocator
 import panel as pn
 from panel.template import MaterialTemplate
 
+
 # Enable Panel (material theme + custom scrollbar CSS)
 pn.extension('tabulator', raw_css=["""
 /* Scrollbar más visible para los MultiSelect con clase .scroll-visible */
@@ -35,7 +36,7 @@ pn.extension('tabulator', raw_css=["""
 
 # ========= 1) DATA =========
 def load_df():
-    # Reads data/ventas.csv next to app.py (as user requested)
+    # Lee data/ventas.csv junto a app.py
     posibles = ["data/ventas.csv", "./data/ventas.csv"]
     df = None
     for ruta in posibles:
@@ -47,18 +48,47 @@ def load_df():
     if df is None:
         raise FileNotFoundError("No se encontró 'data/ventas.csv'. Verificá la ruta.")
 
-    # Normalize types
+    # Tipos básicos
     if 'fecha' in df.columns:
         df['fecha'] = pd.to_datetime(df['fecha'])
     required_cols = ['fecha', 'ciudad', 'categoria', 'total_venta']
     faltan = [c for c in required_cols if c not in df.columns]
     if faltan:
         raise ValueError(f"Faltan columnas obligatorias en el CSV: {faltan}")
-    # Cast string-like
+
+    # Strings
     df['ciudad'] = df['ciudad'].astype(str)
     df['categoria'] = df['categoria'].astype(str)
-    # Numeric assurance
+
+    # Numérico
     df['total_venta'] = pd.to_numeric(df['total_venta'], errors='coerce').fillna(0.0)
+
+    # --- Normalización robusta de ciudades (unifica "San Miguel de Tucumán" en "Tucumán") ---
+    import unicodedata, re
+
+    def _strip_accents(s: str) -> str:
+        return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+
+    ALIAS_TUCUMAN = {
+        "tucuman",
+        "san miguel de tucuman",
+        "san miguel tucuman",
+        "s m de tucuman",
+        "s.m. de tucuman",
+        "Tucumán",
+        "San Miguel de Tucumán",        
+    }
+
+    def _canon_city(s):
+        original = str(s).strip()
+        s0 = _strip_accents(original).lower()
+        s0 = re.sub(r"\s+", " ", s0)  # colapsa espacios
+        if s0 in ALIAS_TUCUMAN:
+            return "Tucumán"
+        return original  # dejá el resto tal como viene (con tildes)
+
+    df['ciudad'] = df['ciudad'].map(_canon_city)
+
     return df
 
 df = load_df()
@@ -67,11 +97,11 @@ df = load_df()
 def responsive_cfg(container_width):
     w = container_width or 1200
     if w < 520:      # móvil
-        return dict(figsize=(5.0, 3.2), fs_title=14, fs_label=10, fs_tick=9, xtick_rot=0, labelpad=10)
+        return dict(figsize=(5.0, 3.2), fs_title=14, fs_label=10, fs_tick=9, xtick_rot=15, labelpad=10)
     elif w < 900:    # tablet
-        return dict(figsize=(7.0, 4.2), fs_title=16, fs_label=12, fs_tick=10, xtick_rot=0, labelpad=10)
+        return dict(figsize=(7.0, 4.2), fs_title=16, fs_label=12, fs_tick=10, xtick_rot=15, labelpad=10)
     else:            # desktop
-        return dict(figsize=(8.5, 5.0), fs_title=18, fs_label=12, fs_tick=11, xtick_rot=0, labelpad=12)
+        return dict(figsize=(8.5, 5.0), fs_title=18, fs_label=12, fs_tick=11, xtick_rot=15, labelpad=12)
 
 def _apply_fig_cfg(fig, cfg):
     # Adjust figure and fonts post-hoc if the plotting function doesn't accept kwargs
@@ -381,8 +411,9 @@ sidebar_dinamico = pn.bind(sidebar_contenido, active_tab_index=tabs.param.active
 
 # ========= 9) TEMPLATE =========
 template = MaterialTemplate(
-    site="Análisis de Ventas",
+    site="Volver al Portfolio",
     title="Dashboard de Ventas de la Empresa",
+    site_url="https://juliososaang.github.io/mi-portfolio/",
     sidebar=[sidebar_dinamico],
     main=[pn.Column(width_anchor, tabs)]
 )
