@@ -372,7 +372,7 @@ def _bloque_filtros_ciudad():
         pn.pane.Markdown("### Ventas por Ciudad"),
         filtro_modo_ciudad,
         pn.Spacer(height=5),
-        pn.pane.Markdown("**Seleccionar Ciudades**"),
+        pn.pane.Markdown("**Seleccionar Ciudades - Para Seleccionar Multiples Ciudades, Mantener Ctrl**"),
         filtro_todas_ciudades
     )
     col_comparar = pn.Column(
@@ -401,7 +401,7 @@ def sidebar_contenido(active_tab_index):
             pn.pane.Markdown("**Rango de meses**"),
             pn.Row(filtro_cat_mes_inicial),
             pn.Row(filtro_cat_mes_final),
-            pn.pane.Markdown("**Ciudades**"),
+            pn.pane.Markdown("**Ciudades - Para Seleccionar Multiples Ciudades, Mantener Ctrl**"),
             filtro_cat_ciudades,
             pn.pane.Markdown("**Categorías**"),
             filtro_cat_categorias
