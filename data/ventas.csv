@@ -1,0 +1,51 @@
+fecha,producto,categoria,cantidad,precio_unitario,total_venta,ciudad
+2023-01-01,Laptop,Electrónica,2,1200,2400,Buenos Aires
+2023-01-01,Mouse,Accesorios,5,25,125,Córdoba
+2023-01-02,Teclado,Accesorios,3,75,225,Córdoba
+2023-01-02,Monitor,Electrónica,1,300,300,Buenos Aires
+2023-01-03,Laptop,Electrónica,1,1200,1200,Rosario
+2023-01-03,Auriculares,Accesorios,10,50,500,Rosario
+2023-01-04,Smartwatch,Wearables,4,200,800,Buenos Aires
+2023-01-04,Laptop,Electrónica,3,1200,3600,Córdoba
+2023-01-05,Mouse,Accesorios,6,25,150,Rosario
+2023-01-05,Teclado,Accesorios,2,75,150,Buenos Aires
+2023-02-01,Laptop,Electrónica,5,1150,5750,Mendoza
+2023-02-01,Monitor,Electrónica,2,290,580,Mendoza
+2023-02-02,Auriculares,Accesorios,8,45,360,Tucumán
+2023-02-02,Mouse,Accesorios,10,24,240,Tucumán
+2023-02-03,Smartwatch,Wearables,3,190,570,Buenos Aires
+2023-02-03,Tablet,Electrónica,1,400,400,Buenos Aires
+2023-02-04,Laptop,Electrónica,2,1150,2300,Córdoba
+2023-02-04,Teclado,Accesorios,5,70,350,Rosario
+2023-02-05,Auriculares,Accesorios,12,45,540,Mendoza
+2023-02-05,Mouse,Accesorios,7,24,168,Tucumán
+2023-03-01,Laptop,Electrónica,4,1180,4720,Mar del Plata
+2023-03-01,Monitor,Electrónica,3,310,930,Salta
+2023-03-02,Tablet,Electrónica,2,420,840,Mar del Plata
+2023-03-02,Auriculares,Accesorios,15,48,720,Salta
+2023-03-03,Mouse,Accesorios,11,26,286,Mar del Plata
+2023-03-03,Teclado,Accesorios,6,80,480,Salta
+2023-03-04,Laptop,Electrónica,3,1180,3540,Bariloche
+2023-03-04,Smartwatch,Wearables,5,210,1050,Bariloche
+2023-03-05,Monitor,Electrónica,4,310,1240,Mar del Plata
+2023-03-05,Auriculares,Accesorios,13,48,624,Salta
+2023-04-01,Laptop,Electrónica,2,1170,2340,La Plata
+2023-04-01,Teclado,Accesorios,7,82,574,La Plata
+2023-04-02,Tablet,Electrónica,3,410,1230,La Plata
+2023-04-02,Mouse,Accesorios,9,28,252,La Plata
+2023-04-03,Auriculares,Accesorios,14,52,728,La Plata
+2023-04-03,Smartwatch,Wearables,6,220,1320,La Plata
+2023-04-04,Monitor,Electrónica,2,320,640,La Plata
+2023-04-04,Laptop,Electrónica,1,1170,1170,La Plata
+2023-04-05,Laptop,Electrónica,4,1170,4680,La Plata
+2023-04-05,Mouse,Accesorios,8,28,224,La Plata
+2023-05-01,Laptop,Electrónica,5,1190,5950,San Miguel de Tucumán
+2023-05-01,Auriculares,Accesorios,16,55,880,San Miguel de Tucumán
+2023-05-02,Teclado,Accesorios,9,85,765,San Miguel de Tucumán
+2023-05-02,Monitor,Electrónica,3,330,990,San Miguel de Tucumán
+2023-05-03,Smartwatch,Wearables,7,230,1610,San Miguel de Tucumán
+2023-05-03,Laptop,Electrónica,3,1190,3570,San Miguel de Tucumán
+2023-05-04,Mouse,Accesorios,12,30,360,San Miguel de Tucumán
+2023-05-04,Tablet,Electrónica,2,430,860,San Miguel de Tucumán
+2023-05-05,Auriculares,Accesorios,15,55,825,San Miguel de Tucumán
+2023-05-05,Laptop,Electrónica,4,1190,4760,San Miguel de Tucumán
