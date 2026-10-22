@@ -60,6 +60,12 @@ def load_df():
     df['ciudad'] = df['ciudad'].astype(str)
     df['categoria'] = df['categoria'].astype(str)
 
+    # Unificar nombre de categoría (robusto a mayúsculas/tildes/espacios):
+    # el notebook usa "Indumentaria Tech" en vez de "Wearables".
+    df['categoria'] = df['categoria'].apply(
+        lambda x: 'Indumentaria Tech' if str(x).strip().lower() == 'wearables' else x
+    )
+
     # Numérico
     df['total_venta'] = pd.to_numeric(df['total_venta'], errors='coerce').fillna(0.0)
 
@@ -69,14 +75,15 @@ def load_df():
     def _strip_accents(s: str) -> str:
         return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
 
+    # Solo versiones ya normalizadas (sin tildes, minúsculas):
+    # _canon_city aplica _strip_accents + .lower() antes de comparar,
+    # así que entradas con tilde o mayúsculas nunca matchearían.
     ALIAS_TUCUMAN = {
         "tucuman",
         "san miguel de tucuman",
         "san miguel tucuman",
         "s m de tucuman",
         "s.m. de tucuman",
-        "Tucumán",
-        "San Miguel de Tucumán",        
     }
 
     def _canon_city(s):
@@ -214,8 +221,12 @@ def create_city_sales_chart(df, ciudades_seleccionadas, *, figsize=(8.5,5.0),
         txt.set_path_effects([mpe.withStroke(linewidth=2, foreground="white")])
     if ymax>0: ax.set_ylim(0, ymax*1.15)
 
-    titulo = ("Total de Ventas - Ciudades Seleccionadas"
-              if len(ciudades_seleccionadas)!=1 else f"Total de Ventas - {ciudades_seleccionadas[0]}")
+    if len(ciudades_seleccionadas) == 1:
+        titulo = f"Total de Ventas - {ciudades_seleccionadas[0]}"
+    elif len(ciudades_seleccionadas) == 2:
+        titulo = f"Total de Ventas - {ciudades_seleccionadas[0]} vs {ciudades_seleccionadas[1]}"
+    else:
+        titulo = "Total de Ventas - Ciudades Seleccionadas"
     ax.set_title(titulo, fontsize=fs_title, fontweight='bold')
     ax.set_xlabel('Ciudad', fontsize=fs_label, labelpad=labelpad)
     ax.set_ylabel('Total venta', fontsize=fs_label)
@@ -272,7 +283,7 @@ filtro_modo_ciudad = pn.widgets.RadioBoxGroup(
     value='Ver todas las ciudades'
 )
 filtro_todas_ciudades = pn.widgets.MultiSelect(
-    name='Seleccionar Ciudades',
+    name='Seleccionar Ciudades - Mantener Ctrl para múltiples',
     options=ciudades_unicas,
     value=ciudades_unicas,
     sizing_mode='stretch_width',
@@ -288,7 +299,7 @@ filtro_mes_final   = pn.widgets.Select(name='Mes Final',   options=fechas_por_me
 filtro_cat_mes_inicial = pn.widgets.Select(name='Mes Inicial', options=fechas_por_mes, value=fechas_por_mes[0])
 filtro_cat_mes_final   = pn.widgets.Select(name='Mes Final',   options=fechas_por_mes, value=fechas_por_mes[-1])
 filtro_cat_ciudades    = pn.widgets.MultiSelect(
-    name="Ciudades",
+    name="Ciudades - Mantener Ctrl para múltiples",
     options=ciudades_unicas,
     value=ciudades_unicas,
     sizing_mode='stretch_width',
@@ -372,7 +383,6 @@ def _bloque_filtros_ciudad():
         pn.pane.Markdown("### Ventas por Ciudad"),
         filtro_modo_ciudad,
         pn.Spacer(height=5),
-        pn.pane.Markdown("**Seleccionar Ciudades - Para Seleccionar Multiples Ciudades, Mantener Ctrl**"),
         filtro_todas_ciudades
     )
     col_comparar = pn.Column(
@@ -401,7 +411,6 @@ def sidebar_contenido(active_tab_index):
             pn.pane.Markdown("**Rango de meses**"),
             pn.Row(filtro_cat_mes_inicial),
             pn.Row(filtro_cat_mes_final),
-            pn.pane.Markdown("**Ciudades - Para Seleccionar Multiples Ciudades, Mantener Ctrl**"),
             filtro_cat_ciudades,
             pn.pane.Markdown("**Categorías**"),
             filtro_cat_categorias
