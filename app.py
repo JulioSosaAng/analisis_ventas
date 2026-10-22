@@ -1,6 +1,7 @@
 # app.py - Panel dashboard (Pyodide-friendly)
 import pandas as pd
 import numpy as np
+import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ import matplotlib.patheffects as mpe
 from matplotlib.ticker import FuncFormatter, MaxNLocator
 import panel as pn
 from panel.template import MaterialTemplate
+
 
 
 # Enable Panel (material theme + custom scrollbar CSS)
@@ -36,17 +38,25 @@ pn.extension('tabulator', raw_css=["""
 
 # ========= 1) DATA =========
 def load_df():
-    # Lee data/ventas.csv junto a app.py
-    posibles = ["data/ventas.csv", "./data/ventas.csv"]
-    df = None
-    for ruta in posibles:
-        try:
-            df = pd.read_csv(ruta, encoding="latin-1")
-            break
-        except Exception:
-            continue
-    if df is None:
-        raise FileNotFoundError("No se encontró 'data/ventas.csv'. Verificá la ruta.")
+    # Detectar si estamos corriendo en el navegador (Pyodide) o en local
+    is_pyodide = sys.platform == 'emscripten'
+    
+    if is_pyodide:
+        # En producción (GitHub Pages), leemos el CSV desde la URL raw de GitHub
+        url = "https://raw.githubusercontent.com/JulioSosaAng/analisis_ventas/main/data/ventas.csv"
+        df = pd.read_csv(url, encoding="latin-1")
+    else:
+        # En local, leemos desde la carpeta data/
+        posibles = ["data/ventas.csv", "./data/ventas.csv"]
+        df = None
+        for ruta in posibles:
+            try:
+                df = pd.read_csv(ruta, encoding="latin-1")
+                break
+            except Exception:
+                continue
+        if df is None:
+            raise FileNotFoundError("No se encontró 'data/ventas.csv'. Verificá la ruta.")
 
     # Tipos básicos
     if 'fecha' in df.columns:
