@@ -147,6 +147,10 @@ def create_monthly_sales_chart(df, mes_inicial, mes_final, *, figsize=(8.5,5.0),
     """Ventas mensuales como burbujas + línea, con etiquetas legibles."""
     inicio_rango = pd.to_datetime(mes_inicial)
     fin_rango = pd.to_datetime(mes_final) + pd.offsets.MonthEnd(0)
+    MESES_ES = {
+        1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'
+    }
     dff = df[(df['fecha'] >= inicio_rango) & (df['fecha'] <= fin_rango)].copy()
 
     if dff.empty:
@@ -155,7 +159,7 @@ def create_monthly_sales_chart(df, mes_inicial, mes_final, *, figsize=(8.5,5.0),
         ax.axis('off'); plt.close(fig); return fig
 
     ventas_por_mes = dff.groupby(pd.Grouper(key='fecha', freq='ME'))['total_venta'].sum()
-    meses = ventas_por_mes.index.strftime('%b %Y')
+    meses = [f"{MESES_ES[m.month]} {m.year}" for m in ventas_por_mes.index]
 
     base_color = '#4682B4'
     accent_color = '#00bcd4'
@@ -187,8 +191,9 @@ def create_monthly_sales_chart(df, mes_inicial, mes_final, *, figsize=(8.5,5.0),
     if vmax > 0:
         ax.set_ylim(0, vmax * 1.25)
 
-    ax.set_title(f"Ventas mensuales ({inicio_rango.strftime('%b %Y')} - {fin_rango.strftime('%b %Y')})",
-                 fontsize=fs_title, fontweight='bold')
+    inicio_str = f"{MESES_ES[inicio_rango.month]} {inicio_rango.year}"
+    fin_str = f"{MESES_ES[fin_rango.month]} {fin_rango.year}"
+    ax.set_title(f"Ventas mensuales ({inicio_str} - {fin_str})", fontsize=fs_title, fontweight='bold')
     ax.set_xlabel('Mes', fontsize=fs_label, labelpad=labelpad)
     ax.set_ylabel('Total venta', fontsize=fs_label)
     ax.tick_params(axis='x', labelsize=fs_tick)
@@ -432,7 +437,7 @@ sidebar_dinamico = pn.bind(sidebar_contenido, active_tab_index=tabs.param.active
 template = MaterialTemplate(
     site="Volver al Portfolio",
     title="Dashboard de Ventas de la Empresa",
-    site_url="https://juliososaang.github.io/mi-portfolio/",
+    site_url="https://juliososaang.github.io/analisis_ventas/app.html",
     sidebar=[sidebar_dinamico],
     main=[pn.Column(width_anchor, tabs)]
 )
